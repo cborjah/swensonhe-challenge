@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import { ListItem } from './';
 import { FlatListSeparator } from './common';
-import { getCurrencies } from '../api/currencyHelpers';
+import { getCurrencies, roundToTwoDecimalPlaces } from '../api/currencyHelpers';
 
-class ConversionRates extends Component {
+class ConversionRates extends PureComponent {
   static navigationOptions = {
     header: null
   };
@@ -43,27 +43,37 @@ class ConversionRates extends Component {
     }
   };
 
-  handleSelection = (currency, conversionRates) => {
+  handleSelectedCurrency = (currency, conversionRates) => {
     console.log('Selected: ', currency);
     console.log('Conversion rates: ', conversionRates);
 
     this.setState({ baseCurrency: currency, conversionRates });
   };
 
+  handleSelectedRate = item => {
+    this.props.navigation.navigate('Calculator', {
+      baseCurrency: this.state.baseCurrency,
+      conversionRate: item
+    });
+  };
+
   handleBaseCurrPress = () => {
     if (this.state.currencies) {
       this.props.navigation.navigate('CurrencyList', {
         currencies: this.state.currencies,
-        onSelection: this.handleSelection
+        onSelection: this.handleSelectedCurrency
       });
     }
   };
 
   handleRenderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={styles.row}>
+      <TouchableOpacity
+        style={styles.row}
+        onPress={() => this.handleSelectedRate(item)}
+      >
         <Text>{item.key}</Text>
-        <Text>{item.rate}</Text>
+        <Text>{roundToTwoDecimalPlaces(item.rate)}</Text>
       </TouchableOpacity>
     );
   };
@@ -115,7 +125,9 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   row: {
-    flexDirection: 'row'
+    paddingVertical: 20,
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 });
 

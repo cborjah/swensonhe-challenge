@@ -20,5 +20,22 @@ export const getLatestRates = base => {
     Config.FIXER_API_KEY
   }&base=${base}`;
 
-  return axios(url).then(response => response.data.rates).catch(err => err);
+  return axios(url)
+    .then(response => response.data.rates)
+    .catch(err => err);
+};
+
+export const convertBaseAmount = (amount, rate) => {
+  const result = amount * rate;
+  console.log('converted base amount: ', result);
+  return result;
+};
+
+export const formatAmount = (wholeNum, decimalNum) => {
+  const resultStr = wholeNum.concat(`.${decimalNum}`);
+  return parseFloat(resultStr);
+};
+
+export const roundToTwoDecimalPlaces = number => {
+  return (Math.round(number * 100) / 100).toFixed(2);
 };

@@ -1,11 +1,12 @@
 import { createStackNavigator } from 'react-navigation';
 
-import { ConversionRates, CurrencyList } from './components';
+import { ConversionRates, CurrencyList, Calculator } from './components';
 
 const Router = createStackNavigator(
   {
     Home: { screen: ConversionRates },
-    CurrencyList: { screen: CurrencyList }
+    CurrencyList: { screen: CurrencyList },
+    Calculator: { screen: Calculator }
   },
   {
     initialRouteName: 'Home'
