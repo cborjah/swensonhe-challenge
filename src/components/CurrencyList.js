@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native';
+import { FlatListSeparator } from './common';
 import { getCurrencies, getLatestRates } from '../api/currencyHelpers';
 
 class CurrencyList extends PureComponent {
@@ -22,7 +23,14 @@ class CurrencyList extends PureComponent {
       const conversionRates = await getLatestRates(item.key);
       console.log('Successfully retrieved conversion rates: ', conversionRates);
 
-      onSelection(item, conversionRates);
+      const ratesArr = Object.keys(conversionRates).map(key => {
+        return {
+          key,
+          rate: conversionRates[key]
+        };
+      });
+
+      onSelection(item, ratesArr);
       navigation.goBack();
     } catch (err) {
       console.log(err);
@@ -32,7 +40,7 @@ class CurrencyList extends PureComponent {
   handleRenderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        style={{ flexDirection: 'row' }}
+        style={styles.row}
         onPress={() => this.handleOnPress(item)}
       >
         <Text>{item.key}</Text>
@@ -41,7 +49,7 @@ class CurrencyList extends PureComponent {
     );
   };
 
-  renderSeparator = () => <View style={styles.separator} />;
+  renderSeparator = () => <FlatListSeparator />;
 
   render() {
     return (
@@ -61,9 +69,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white'
   },
-  separator: {
-    height: 1,
-    backgroundColor: 'black'
+  row: {
+    flexDirection: 'row'
   }
 });
 
