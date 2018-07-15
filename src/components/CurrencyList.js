@@ -1,5 +1,11 @@
 import React, { PureComponent } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity
+} from 'react-native';
 import { getCurrencies } from '../api/currencyHelpers';
 
 class CurrencyList extends PureComponent {
@@ -31,16 +37,26 @@ class CurrencyList extends PureComponent {
     }
   };
 
+  handleOnPress = item => {
+    const { navigation } = this.props;
+    const onSelection = navigation.getParam('onSelection');
+    onSelection(item);
+    navigation.goBack();
+  }
+
   handleRenderItem = ({ item }) => {
     return (
-      <View style={{ flexDirection: 'row' }}>
+      <TouchableOpacity
+        style={{ flexDirection: 'row' }}
+        onPress={() => this.handleOnPress(item)}
+      >
         <Text>{item.key}</Text>
         <Text>{item.caption}</Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
-  renderSeparator = () => <View style={styles.separator} />
+  renderSeparator = () => <View style={styles.separator} />;
 
   render() {
     return (
@@ -65,5 +81,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'black'
   }
 });
+
+// CurrencyList.propTypes = {
+//   onSelection: PropTypes.string.isRequired
+// };
+
+// CurrencyList.defaultProps = {
+//   text: "Lorem ipsum"
+// };
 
 export { CurrencyList };
