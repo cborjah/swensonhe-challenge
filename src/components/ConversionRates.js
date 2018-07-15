@@ -7,6 +7,7 @@ import {
   FlatList
 } from 'react-native';
 import { ListItem } from './';
+import { getCurrencies } from '../api/currencyHelpers';
 
 class ConversionRates extends Component {
   static navigationOptions = {
@@ -14,19 +15,49 @@ class ConversionRates extends Component {
   };
 
   state = {
+    currencies: [],
     baseCurrency: '',
     conversionRates: []
   };
 
-  handleSelection = currency => {
+  componentDidMount() {
+    this.fetchCurrencies();
+  }
+
+  fetchCurrencies = async () => {
+    try {
+      const currencies = await getCurrencies();
+      console.log('List of currencies received: ', currencies);
+
+      const currArr = Object.keys(currencies).map(key => {
+        return {
+          key,
+          caption: currencies[key]
+        };
+      });
+
+      // console.log('currArr: ', currArr);
+      this.setState({ currencies: currArr });
+    } catch (err) {
+      console.log('Error fetching currency list: ', err);
+    }
+  };
+
+
+  handleSelection = (currency, conversionRates) => {
     console.log('Selected: ', currency);
+    console.log('Conversion rates: ', conversionRates);
+
     this.setState({ baseCurrency: currency });
   };
 
   handleBaseCurrPress = () => {
-    this.props.navigation.navigate('CurrencyList', {
-      onSelection: this.handleSelection
-    });
+    if (!!this.state.currencies.length) {
+      this.props.navigation.navigate('CurrencyList', {
+        currencies: this.state.currencies,
+        onSelection: this.handleSelection
+      });
+    }
   };
 
   renderConversionRates = () => {

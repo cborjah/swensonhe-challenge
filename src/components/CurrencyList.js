@@ -6,7 +6,7 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native';
-import { getCurrencies } from '../api/currencyHelpers';
+import { getCurrencies, getLatestRates } from '../api/currencyHelpers';
 
 class CurrencyList extends PureComponent {
   state = {
@@ -14,35 +14,20 @@ class CurrencyList extends PureComponent {
     loading: false
   };
 
-  componentDidMount() {
-    this.fetchCurrencies();
-  }
-
-  fetchCurrencies = async () => {
-    try {
-      const currencies = await getCurrencies();
-      console.log('List of currencies received: ', currencies);
-
-      const currArr = Object.keys(currencies).map(key => {
-        return {
-          key,
-          caption: currencies[key]
-        };
-      });
-
-      // console.log('currArr: ', currArr);
-      this.setState({ currencies: currArr });
-    } catch (err) {
-      console.log('Error fetching currency list: ', err);
-    }
-  };
-
-  handleOnPress = item => {
+  handleOnPress = async item => {
     const { navigation } = this.props;
     const onSelection = navigation.getParam('onSelection');
-    onSelection(item);
-    navigation.goBack();
-  }
+
+    try {
+      const conversionRates = await getLatestRates(item.key);
+      console.log('Successfully retrieved conversion rates: ', conversionRates);
+
+      onSelection(item, conversionRates);
+      navigation.goBack();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   handleRenderItem = ({ item }) => {
     return (
@@ -62,7 +47,7 @@ class CurrencyList extends PureComponent {
     return (
       <View style={styles.container}>
         <FlatList
-          data={this.state.currencies}
+          data={this.props.navigation.getParam('currencies')}
           renderItem={this.handleRenderItem}
           ItemSeparatorComponent={this.renderSeparator}
         />
