@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Router } from ''
+import Router from './Router';
 
 export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <RootStack />
+        <Router />
       </View>
     );
   }
