@@ -66,17 +66,9 @@ class ConversionRates extends PureComponent {
     }
   };
 
-  handleRenderItem = ({ item }) => {
-    return (
-      <TouchableOpacity
-        style={styles.row}
-        onPress={() => this.handleSelectedRate(item)}
-      >
-        <Text>{item.key}</Text>
-        <Text>{roundToTwoDecimalPlaces(item.rate)}</Text>
-      </TouchableOpacity>
-    );
-  };
+  handleRenderItem = ({ item }) => (
+    <ListItem data={item} onPress={this.handleSelectedRate} type={'rates'} />
+  );
 
   renderSeparator = () => <FlatListSeparator />;
 
@@ -115,11 +107,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   baseCurrBtn: {
-    height: 70,
     backgroundColor: 'blue',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'row'
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: 35,
+    paddingVertical: 30
   },
   baseCurrBtnTxt: {
     color: 'white'

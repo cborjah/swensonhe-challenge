@@ -7,8 +7,8 @@ const FlatListSeparator = () => (
 
 const styles = StyleSheet.create({
   separator: {
-    height: 1,
-    backgroundColor: 'black'
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'grey'
   }
 });
 

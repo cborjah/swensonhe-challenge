@@ -6,10 +6,15 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native';
+import { ListItem } from './';
 import { FlatListSeparator } from './common';
 import { getCurrencies, getLatestRates } from '../api/currencyHelpers';
 
 class CurrencyList extends PureComponent {
+  static navigationOptions = {
+    title: 'Currencies'
+  };
+
   state = {
     currencies: null,
     loading: false
@@ -37,17 +42,9 @@ class CurrencyList extends PureComponent {
     }
   };
 
-  handleRenderItem = ({ item }) => {
-    return (
-      <TouchableOpacity
-        style={styles.row}
-        onPress={() => this.handleOnPress(item)}
-      >
-        <Text>{item.key}</Text>
-        <Text>{item.caption}</Text>
-      </TouchableOpacity>
-    );
-  };
+  handleRenderItem = ({ item }) => (
+    <ListItem data={item} onPress={this.handleOnPress} type={'currencies'} />
+  );
 
   renderSeparator = () => <FlatListSeparator />;
 
