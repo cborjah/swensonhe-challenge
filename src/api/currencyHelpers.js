@@ -28,7 +28,7 @@ export const getLatestRates = base => {
 export const convertBaseAmount = (amount, rate) => {
   const result = amount * rate;
   console.log('converted base amount: ', result);
-  return result;
+  return result.toFixed(2);
 };
 
 export const formatAmount = (wholeNum, decimalNum) => {

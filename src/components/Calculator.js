@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
-import { convertBaseAmount, formatAmount, roundToTwoDecimalPlaces } from '../api/currencyHelpers';
+import {
+  convertBaseAmount,
+  formatAmount,
+  roundToTwoDecimalPlaces
+} from '../api/currencyHelpers';
 
 class Calculator extends PureComponent {
   state = {
@@ -19,34 +23,30 @@ class Calculator extends PureComponent {
     this.setState({ convertedAmount: formattedAmount.toString() });
   }
 
-  handleOnChangeWholeNum = amount => {
-    const rate = this.props.navigation.getParam('conversionRate').rate;
+  handleOnChange = (amount, type) => {
+    if (type === 'whole') {
+      this.setState({ wholeNum: amount }, () => {
+        this.performCalculations()
+      });
+    }
 
-    this.setState({ wholeNum: amount }, () => {
-      const formattedAmount = formatAmount(
-        this.state.wholeNum,
-        this.state.decimalNum
-      );
-      const newAmount = convertBaseAmount(formattedAmount, rate);
-      console.log('newAmount: ', newAmount);
-      const newAmountRounded = roundToTwoDecimalPlaces(newAmount);
-      this.setState({ convertedAmount: newAmountRounded.toString() });
-    });
+    if (type === 'decimal') {
+      this.setState({ decimalNum: amount }, () => {
+        this.performCalculations();
+      });
+    }
   };
 
-  handleOnChangeDecimalNum = amount => {
+  performCalculations = () => {
     const rate = this.props.navigation.getParam('conversionRate').rate;
 
-    this.setState({ decimalNum: amount }, () => {
-      const formattedAmount = formatAmount(
-        this.state.wholeNum,
-        this.state.decimalNum
-      );
-      const newAmount = convertBaseAmount(formattedAmount, rate);
-      console.log('newAmount: ', newAmount);
-      const newAmountRounded = roundToTwoDecimalPlaces(newAmount);
-      this.setState({ convertedAmount: newAmountRounded.toString() });
-    });
+    const formattedAmount = formatAmount(
+      this.state.wholeNum,
+      this.state.decimalNum
+    );
+
+    const newAmount = convertBaseAmount(formattedAmount, rate);
+    this.setState({ convertedAmount: newAmount.toString() });
   };
 
   renderInput = () => {
@@ -54,7 +54,7 @@ class Calculator extends PureComponent {
       <View style={styles.row}>
         <TextInput
           style={styles.input}
-          onChangeText={this.handleOnChangeWholeNum}
+          onChangeText={val => this.handleOnChange(val, 'whole')}
           value={this.state.wholeNum}
           keyboardType="number-pad"
           maxLength={4}
@@ -62,7 +62,7 @@ class Calculator extends PureComponent {
         <Text>.</Text>
         <TextInput
           style={styles.input}
-          onChangeText={this.handleOnChangeDecimalNum}
+          onChangeText={val => this.handleOnChange(val, 'decimal')}
           value={this.state.decimalNum}
           keyboardType="number-pad"
           maxLength={2}
