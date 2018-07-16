@@ -20,12 +20,12 @@ class CurrencyList extends PureComponent {
     loading: false
   };
 
-  handleOnPress = async item => {
+  handleOnPress = async baseCurrency => {
     const { navigation } = this.props;
     const onSelection = navigation.getParam('onSelection');
-
+    
     try {
-      const conversionRates = await getLatestRates(item.key);
+      const conversionRates = await getLatestRates(baseCurrency);
       console.log('Successfully retrieved conversion rates: ', conversionRates);
 
       const ratesArr = Object.keys(conversionRates).map(key => {
@@ -35,7 +35,7 @@ class CurrencyList extends PureComponent {
         };
       });
 
-      onSelection(item, ratesArr);
+      onSelection(baseCurrency, ratesArr);
       navigation.goBack();
     } catch (err) {
       console.log(err);

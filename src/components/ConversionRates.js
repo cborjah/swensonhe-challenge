@@ -30,23 +30,13 @@ class ConversionRates extends PureComponent {
       const currencies = await getCurrencies();
       console.log('List of currencies received: ', currencies);
 
-      const currArr = Object.keys(currencies).map(key => {
-        return {
-          key,
-          caption: currencies[key]
-        };
-      });
-
-      this.setState({ currencies: currArr });
+      this.setState({ currencies: currencies });
     } catch (err) {
       console.log('Error fetching currency list: ', err);
     }
   };
 
   handleSelectedCurrency = (currency, conversionRates) => {
-    console.log('Selected: ', currency);
-    console.log('Conversion rates: ', conversionRates);
-
     this.setState({ baseCurrency: currency, conversionRates });
   };
 
@@ -58,7 +48,7 @@ class ConversionRates extends PureComponent {
   };
 
   handleBaseCurrPress = () => {
-    if (this.state.currencies) {
+    if (!!this.state.currencies.length) {
       this.props.navigation.navigate('CurrencyList', {
         currencies: this.state.currencies,
         onSelection: this.handleSelectedCurrency
@@ -73,7 +63,6 @@ class ConversionRates extends PureComponent {
   renderSeparator = () => <FlatListSeparator />;
 
   renderConversionRates = () => {
-    console.log('Rendering conversion rates: ', this.state.conversionRates);
     return (
       <FlatList
         data={this.state.conversionRates}
@@ -92,8 +81,8 @@ class ConversionRates extends PureComponent {
           style={styles.baseCurrBtn}
           onPress={this.handleBaseCurrPress}
         >
-          <Text style={styles.baseCurrBtnTxt}>Base Currency</Text>
-          <Text style={styles.baseCurrBtnTxt}>{baseCurrency.key}</Text>
+          <Text style={styles.baseCurrBtnTxt}>{baseCurrency ? 'Base Currency' : 'Please select a base currency.'}</Text>
+          <Text style={styles.baseCurrBtnTxt}>{baseCurrency}</Text>
         </TouchableOpacity>
         {conversionRates && this.renderConversionRates()}
       </View>

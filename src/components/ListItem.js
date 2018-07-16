@@ -9,7 +9,7 @@ class ListItem extends PureComponent {
 
     switch (this.props.type) {
       case 'currencies':
-        leftContent = this.props.data.key;
+        leftContent = this.props.data;
         break;
       case 'rates':
         leftContent = this.props.data.key;
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
 });
 
 ListItem.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
   onPress: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired
 };

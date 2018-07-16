@@ -2,23 +2,23 @@ import axios from 'axios';
 import Config from 'react-native-config';
 
 export const getCurrencies = () => {
-  const url = `http://data.fixer.io/api/symbols?access_key=${
-    Config.FIXER_API_KEY
-  }`;
+  const url = `https://exchangeratesapi.io/api/latest`;
 
   return axios(url)
-    .then(response => response.data.symbols)
+    .then(response => {
+      console.log('response: ', response);
+      const codeArr = Object.keys(response.data.rates).map(
+        currencyCode => currencyCode
+      );
+      codeArr.push('EUR');
+      return codeArr.sort();
+    })
     .catch(err => console.log(err));
 };
 
 export const getLatestRates = base => {
   console.log('base: ', base);
-
-  base = 'EUR'; // Mock data
-
-  const url = `http://data.fixer.io/api/latest?access_key=${
-    Config.FIXER_API_KEY
-  }&base=${base}`;
+  const url = `https://exchangeratesapi.io/api/latest?base=${base}`;
 
   return axios(url)
     .then(response => response.data.rates)
