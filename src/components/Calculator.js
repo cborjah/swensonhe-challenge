@@ -1,10 +1,14 @@
 import React, { PureComponent } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Dimensions } from 'react-native';
+import PropTypes from 'prop-types';
 import {
   convertBaseAmount,
   formatAmount,
   roundToTwoDecimalPlaces
 } from '../api/currencyHelpers';
+import { FlatListSeparator } from './common';
+
+const WIDTH = Dimensions.get('window').width;
 
 class Calculator extends PureComponent {
   state = {
@@ -15,18 +19,16 @@ class Calculator extends PureComponent {
 
   componentDidMount() {
     const { navigation } = this.props;
-    console.log('Calculator has mounted.');
-    // console.log('baseCurrency: ', navigation.getParam('baseCurrency'));
-    // console.log('conversionRate: ', navigation.getParam('conversionRate'));
     const defaultAmount = navigation.getParam('conversionRate').rate;
     const formattedAmount = roundToTwoDecimalPlaces(defaultAmount);
+    
     this.setState({ convertedAmount: formattedAmount.toString() });
   }
 
   handleOnChange = (amount, type) => {
     if (type === 'whole') {
       this.setState({ wholeNum: amount }, () => {
-        this.performCalculations()
+        this.performCalculations();
       });
     }
 
@@ -50,24 +52,28 @@ class Calculator extends PureComponent {
   };
 
   renderInput = () => {
+    const baseCurrency = this.props.navigation.getParam('baseCurrency');
+
     return (
-      <View style={styles.row}>
-        <TextInput
-          style={styles.input}
-          onChangeText={val => this.handleOnChange(val, 'whole')}
-          value={this.state.wholeNum}
-          keyboardType="number-pad"
-          maxLength={4}
-        />
-        <Text>.</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={val => this.handleOnChange(val, 'decimal')}
-          value={this.state.decimalNum}
-          keyboardType="number-pad"
-          maxLength={2}
-        />
-        <Text>EUR</Text>
+      <View style={[styles.inputContainer, styles.row]}>
+        <View style={[styles.row, styles.input]}>
+          <TextInput
+            style={styles.number}
+            onChangeText={val => this.handleOnChange(val, 'whole')}
+            value={this.state.wholeNum}
+            keyboardType="number-pad"
+            maxLength={4}
+          />
+          <Text style={styles.number}>.</Text>
+          <TextInput
+            style={styles.number}
+            onChangeText={val => this.handleOnChange(val, 'decimal')}
+            value={this.state.decimalNum}
+            keyboardType="number-pad"
+            maxLength={2}
+          />
+        </View>
+        <Text style={styles.currencyText}>{baseCurrency}</Text>
       </View>
     );
   };
@@ -75,17 +81,18 @@ class Calculator extends PureComponent {
   renderResult = () => {
     const conversionRate = this.props.navigation.getParam('conversionRate');
     return (
-      <View style={styles.row}>
-        <Text>{this.state.convertedAmount}</Text>
-        <Text>{conversionRate.key}</Text>
+      <View style={[styles.resultContainer, styles.row]}>
+        <Text style={styles.number}>{this.state.convertedAmount}</Text>
+        <Text style={styles.currencyText}>{conversionRate.key}</Text>
       </View>
     );
   };
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} keyboardVerticalOffset={20}>
         {this.renderInput()}
+        <FlatListSeparator />
         {this.renderResult()}
       </View>
     );
@@ -94,11 +101,31 @@ class Calculator extends PureComponent {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    paddingHorizontal: WIDTH * 0.1,
+    paddingTop: 30,
+    backgroundColor: 'white'
   },
-  input: {},
   row: {
     flexDirection: 'row'
+  },
+  inputContainer: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 15
+  },
+  number: {
+    fontSize: 50,
+    fontWeight: '200'
+  },
+  resultContainer: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 15
+  },
+  currencyText: {
+    fontSize: 45,
+    fontWeight: '200'
   }
 });
 
