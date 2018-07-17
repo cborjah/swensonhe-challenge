@@ -1,5 +1,4 @@
 import axios from 'axios';
-import Config from 'react-native-config';
 
 export const getCurrencies = () => {
   const url = `https://exchangeratesapi.io/api/latest`;
