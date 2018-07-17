@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { ListItem } from './';
 import { FlatListSeparator, LoadingOverlay } from './common';
-import { getCurrencies, getLatestRates } from '../api/currencyHelpers';
+import { getLatestRates } from '../api/currencyHelpers';
 
 class CurrencyList extends PureComponent {
   static navigationOptions = {
@@ -37,7 +37,9 @@ class CurrencyList extends PureComponent {
         };
       });
 
+      // Passes back fetched conversion rates to ConversionRates screen.
       onSelection(baseCurrency, ratesArr);
+
       navigation.goBack();
     } catch (err) {
       console.log(err);
@@ -59,6 +61,7 @@ class CurrencyList extends PureComponent {
         <FlatList
           data={this.props.navigation.getParam('currencies')}
           renderItem={this.handleRenderItem}
+          keyExtractor={item => item}
           ItemSeparatorComponent={this.renderSeparator}
         />
       </View>
@@ -78,12 +81,9 @@ const styles = StyleSheet.create({
   }
 });
 
-// CurrencyList.propTypes = {
-//   onSelection: PropTypes.string.isRequired
-// };
-
-// CurrencyList.defaultProps = {
-//   text: "Lorem ipsum"
-// };
+CurrencyList.propTypes = {
+  currencies: PropTypes.object.isRequired
+  onSelection: PropTypes.func.isRequired
+};
 
 export { CurrencyList };

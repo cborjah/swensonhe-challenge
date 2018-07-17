@@ -6,7 +6,6 @@ export const getCurrencies = () => {
 
   return axios(url)
     .then(response => {
-      console.log('response: ', response);
       const codeArr = Object.keys(response.data.rates).map(
         currencyCode => currencyCode
       );
@@ -17,7 +16,7 @@ export const getCurrencies = () => {
 };
 
 export const getLatestRates = base => {
-  console.log('base: ', base);
+  console.log(`Fetching latest rates for ${base}`);
   const url = `https://exchangeratesapi.io/api/latest?base=${base}`;
 
   return axios(url)

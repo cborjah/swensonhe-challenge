@@ -4,8 +4,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  FlatList,
-  ActivityIndicator
+  FlatList
 } from 'react-native';
 import { ListItem } from './';
 import { FlatListSeparator, LoadingOverlay } from './common';
@@ -42,25 +41,26 @@ class ConversionRates extends PureComponent {
     this.setState({ loading: false });
   };
 
-  handleSelectedCurrency = (currency, conversionRates) => {
-    this.setState({ baseCurrency: currency, conversionRates });
-  };
-
   handleSelectedRate = item => {
-    console.log('this.state.baseCurrency: ', this.state.baseCurrency);
     this.props.navigation.navigate('Calculator', {
       baseCurrency: this.state.baseCurrency,
       conversionRate: item
     });
   };
 
+  /*
+  Passed on to CurrencyList screen as onSelection prop, stores fetched
+  conversion rates in state for displaying.
+  */
+  handleSelectedCurrency = (currency, conversionRates) => {
+    this.setState({ baseCurrency: currency, conversionRates });
+  };
+
   handleBaseCurrPress = () => {
-    if (!!this.state.currencies.length) {
-      this.props.navigation.navigate('CurrencyList', {
-        currencies: this.state.currencies,
-        onSelection: this.handleSelectedCurrency
-      });
-    }
+    this.props.navigation.navigate('CurrencyList', {
+      currencies: this.state.currencies,
+      onSelection: this.handleSelectedCurrency
+    });
   };
 
   handleRenderItem = ({ item }) => (
@@ -74,6 +74,7 @@ class ConversionRates extends PureComponent {
       <FlatList
         data={this.state.conversionRates}
         renderItem={this.handleRenderItem}
+        keyExtractor={item => item.key}
         ItemSeparatorComponent={this.renderSeparator}
       />
     );
@@ -114,7 +115,9 @@ const styles = StyleSheet.create({
     paddingVertical: 30
   },
   baseCurrBtnTxt: {
-    color: 'white'
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '200'
   },
   row: {
     paddingVertical: 20,
