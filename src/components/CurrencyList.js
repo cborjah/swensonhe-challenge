@@ -7,7 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { ListItem } from './';
-import { FlatListSeparator } from './common';
+import { FlatListSeparator, LoadingOverlay } from './common';
 import { getCurrencies, getLatestRates } from '../api/currencyHelpers';
 
 class CurrencyList extends PureComponent {
@@ -23,7 +23,9 @@ class CurrencyList extends PureComponent {
   handleOnPress = async baseCurrency => {
     const { navigation } = this.props;
     const onSelection = navigation.getParam('onSelection');
-    
+
+    this.setState({ loading: true });
+
     try {
       const conversionRates = await getLatestRates(baseCurrency);
       console.log('Successfully retrieved conversion rates: ', conversionRates);
@@ -40,6 +42,8 @@ class CurrencyList extends PureComponent {
     } catch (err) {
       console.log(err);
     }
+
+    this.setState({ loading: false });
   };
 
   handleRenderItem = ({ item }) => (
@@ -51,6 +55,7 @@ class CurrencyList extends PureComponent {
   render() {
     return (
       <View style={styles.container}>
+        {this.state.loading && <LoadingOverlay />}
         <FlatList
           data={this.props.navigation.getParam('currencies')}
           renderItem={this.handleRenderItem}

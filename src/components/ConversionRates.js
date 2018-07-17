@@ -4,10 +4,11 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from 'react-native';
 import { ListItem } from './';
-import { FlatListSeparator } from './common';
+import { FlatListSeparator, LoadingOverlay } from './common';
 import { getCurrencies, roundToTwoDecimalPlaces } from '../api/currencyHelpers';
 
 class ConversionRates extends PureComponent {
@@ -16,6 +17,7 @@ class ConversionRates extends PureComponent {
   };
 
   state = {
+    loading: false,
     currencies: [],
     baseCurrency: '',
     conversionRates: null
@@ -26,6 +28,8 @@ class ConversionRates extends PureComponent {
   }
 
   fetchCurrencies = async () => {
+    this.setState({ loading: true });
+
     try {
       const currencies = await getCurrencies();
       console.log('List of currencies received: ', currencies);
@@ -34,6 +38,8 @@ class ConversionRates extends PureComponent {
     } catch (err) {
       console.log('Error fetching currency list: ', err);
     }
+
+    this.setState({ loading: false });
   };
 
   handleSelectedCurrency = (currency, conversionRates) => {
@@ -41,6 +47,7 @@ class ConversionRates extends PureComponent {
   };
 
   handleSelectedRate = item => {
+    console.log('this.state.baseCurrency: ', this.state.baseCurrency);
     this.props.navigation.navigate('Calculator', {
       baseCurrency: this.state.baseCurrency,
       conversionRate: item
@@ -77,11 +84,14 @@ class ConversionRates extends PureComponent {
 
     return (
       <View style={styles.container}>
+        {this.state.loading && <LoadingOverlay />}
         <TouchableOpacity
           style={styles.baseCurrBtn}
           onPress={this.handleBaseCurrPress}
         >
-          <Text style={styles.baseCurrBtnTxt}>{baseCurrency ? 'Base Currency' : 'Please select a base currency.'}</Text>
+          <Text style={styles.baseCurrBtnTxt}>
+            {baseCurrency ? 'Base Currency' : 'Please select a base currency.'}
+          </Text>
           <Text style={styles.baseCurrBtnTxt}>{baseCurrency}</Text>
         </TouchableOpacity>
         {conversionRates && this.renderConversionRates()}

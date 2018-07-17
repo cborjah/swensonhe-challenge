@@ -11,6 +11,10 @@ import { FlatListSeparator } from './common';
 const WIDTH = Dimensions.get('window').width;
 
 class Calculator extends PureComponent {
+  static navigationOptions = {
+    title: 'Calculator'
+  };
+
   state = {
     wholeNum: '1',
     decimalNum: '00',
@@ -21,7 +25,7 @@ class Calculator extends PureComponent {
     const { navigation } = this.props;
     const defaultAmount = navigation.getParam('conversionRate').rate;
     const formattedAmount = roundToTwoDecimalPlaces(defaultAmount);
-    
+
     this.setState({ convertedAmount: formattedAmount.toString() });
   }
 
