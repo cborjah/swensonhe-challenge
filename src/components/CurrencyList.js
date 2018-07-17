@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { ListItem } from './';
 import { FlatListSeparator, LoadingOverlay } from './common';
 import { getLatestRates } from '../api/currencyHelpers';
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
 });
 
 CurrencyList.propTypes = {
-  currencies: PropTypes.object.isRequired
+  currencies: PropTypes.object.isRequired,
   onSelection: PropTypes.func.isRequired
 };
 
