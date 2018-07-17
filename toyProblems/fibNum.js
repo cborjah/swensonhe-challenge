@@ -18,21 +18,15 @@ findFibNum = n => {
     i += 1;
   }
 
-  console.log("numbers list: ", numbers);
   console.log("Nth number is: ", numbers[numbers.length - 1]);
 }
 
 // Recursive approach
 // findFibNum = (n, numbers, i) => {
-//   // const numbers = [0, 1];
-//   console.log("numbers: ", numbers);
-//   console.log("i: ", i);
-//
 //   if (n === 0) return console.log("Nth number is: ", 0);
 //   if (n === 1) return console.log("Nth number is: ", 1);
 //
 //   if (!numbers) {
-//     console.log("n is not 0 or 1, setting up numbers arr.");
 //     numbers = [0, 1];
 //     i = 2;
 //   }
@@ -44,7 +38,7 @@ findFibNum = n => {
 //     return findFibNum(n, numbers, i);
 //   }
 //
-//   console.log("numbers list: ", numbers);
+//   // console.log("numbers list: ", numbers);
 //   console.log("Nth number is: ", numbers[numbers.length - 1]);
 // }
 
